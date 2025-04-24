@@ -48,6 +48,45 @@ let formateTime = (seconds) => {
 let updateTimer = () => {
     timer--;
     document.getElementById('timer').textContent = formateTime(timer);
+
+    if (timer <= 0) {
+        endGame(false);
+    }
+}
+
+
+let initializeGame = () => {
+    score = 0;
+    timer = 120;
+    document.getElementById("score").textContent = score;
+    document.getElementById("timer").textContent = formateTime(timer);
+    document.getElementById("congrats-overlay").style.display = "none";
+    document.getElementById("lose-overlay").style.display = "none";
+    setRandomColor();
+    setTargetColor();
+
+    const bgm = document.getElementById("background-music");
+    // bgm.play();
+
+    gameInterval = setInterval(setRandomColor, 1000);
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+let endGame = (isWin) => {
+    clearInterval(gameInterval)
+    clearInterval(timerInterval)
+
+    document.getElementById("background-music").pause();
+
+    const overlay = isWin ? document.getElementById('congrats-overlay') : document.getElementById('lose-overlay');
+
+    overlay.style.display = 'block';
+
+    if (isWin) {
+        document.getElementById('win-music').play();
+    } else {
+        document.getElementById('lose-music').play();
+    }
 }
 
 let handleClick = (e) => {
@@ -67,24 +106,12 @@ let handleClick = (e) => {
     }
 }
 
-let initializeGame = () => {
-    score = 0;
-    timer = 120;
-    document.getElementById("score").textContent = score;
-    document.getElementById("timer").textContent = formateTime(timer);
-    document.getElementById("congrats-overlay").style.display = "none";
-    document.getElementById("lose-overlay").style.display = "none";
-    setRandomColor();
-    setTargetColor();
+document.querySelectorAll('.cell').forEach(cell => {
+    cell.addEventListener('click', handleClick);
+})
 
-    const bgm = document.getElementById("background-music");
-    // bgm.play();
+document.getElementById('restart-game-overlay').addEventListener('click', initializeGame)
 
-    gameInterval = setInterval(setRandomColor, 1000);
-    timerInterval = setInterval(updateTimer, 1000);
-}
+document.getElementById('restart-game-overlay-lose').addEventListener('click', initializeGame)
 
 initializeGame();
-
-
-let endGame = () => { }
